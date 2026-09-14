@@ -1,0 +1,7 @@
+{
+  "sensitive_keywords": [
+    "password", "passwd", "pwd", "secret", "secret_key", "api_key",
+    "apikey", "token", "access_token", "refresh_token", "credential",
+    "auth", "private_key"
+  ]
+}

@@ -1,0 +1,2 @@
+database_url: "postgresql://course_user:FakeDbPass2468@localhost:5432/course_demo"
+service_name: "CredScope Demo"

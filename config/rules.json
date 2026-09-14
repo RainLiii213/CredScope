@@ -1,0 +1,84 @@
+{
+  "rules": [
+    {
+      "id": "github-token",
+      "name": "GitHub Token",
+      "regex": "(?P<secret>github_pat_[A-Za-z0-9_]{20,255}|gh[pousr]_[A-Za-z0-9]{36,255})",
+      "severity_base": 60,
+      "keywords": [],
+      "recommendation": "立即撤销该 GitHub Token，并通过环境变量或密钥管理服务提供替代凭据。"
+    },
+    {
+      "id": "jwt",
+      "name": "JSON Web Token",
+      "regex": "(?P<secret>eyJ[A-Za-z0-9_-]{7,}\\.eyJ[A-Za-z0-9_-]{7,}\\.[A-Za-z0-9_-]{10,})",
+      "severity_base": 60,
+      "keywords": [],
+      "recommendation": "撤销或轮换 JWT，并避免将可用令牌写入源码。"
+    },
+    {
+      "id": "bearer-token",
+      "name": "Bearer Token",
+      "regex": "(?i)\\bBearer\\s+(?P<secret>[A-Za-z0-9._~+/-]{16,}=*)",
+      "severity_base": 60,
+      "keywords": ["bearer"],
+      "recommendation": "撤销或轮换该 Bearer Token，并从源码中移除。"
+    },
+    {
+      "id": "private-key-header",
+      "name": "Private Key",
+      "regex": "(?P<secret>-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----)",
+      "severity_base": 80,
+      "keywords": ["private key"],
+      "recommendation": "立即移除并轮换私钥；仅通过权限受控的密钥存储加载。"
+    },
+    {
+      "id": "database-url",
+      "name": "Database Connection String",
+      "regex": "(?P<secret>(?:postgres(?:ql)?|mysql|mongodb(?:\\+srv)?|redis)://[^:/\\s'\"]+:[^@/\\s'\"]+@[^\\s'\"]+)",
+      "severity_base": 60,
+      "keywords": ["://"],
+      "recommendation": "轮换数据库密码，并使用环境变量拼装连接配置。"
+    },
+    {
+      "id": "aws-access-key",
+      "name": "AWS Access Key ID",
+      "regex": "(?P<secret>AKIA[0-9A-Z]{16})",
+      "severity_base": 60,
+      "keywords": [],
+      "recommendation": "停用并轮换该访问密钥，改用短期凭据或安全配置。"
+    },
+    {
+      "id": "slack-token",
+      "name": "Slack Token",
+      "regex": "(?P<secret>xox[baprs]-[A-Za-z0-9-]{20,})",
+      "severity_base": 60,
+      "keywords": [],
+      "recommendation": "撤销并轮换 Slack Token，避免在代码仓库中保存。"
+    },
+    {
+      "id": "generic-api-key",
+      "name": "Generic API Key",
+      "regex": "(?i)(?:api[_-]?key|apikey)\\s*(?:=|:)\\s*['\"](?P<secret>[A-Za-z0-9_./+~=-]{12,})['\"]",
+      "severity_base": 60,
+      "keywords": ["api", "key"],
+      "recommendation": "轮换 API Key，并改由环境变量或密钥管理服务注入。"
+    },
+    {
+      "id": "generic-secret",
+      "name": "Generic Secret",
+      "regex": "(?i)(?:secret|client_secret|secret_key)\\s*(?:=|:)\\s*['\"](?P<secret>[A-Za-z0-9_./+~=-]{16,})['\"]",
+      "severity_base": 60,
+      "keywords": ["secret"],
+      "recommendation": "轮换该 Secret，并避免在源码或静态配置中硬编码。"
+    },
+    {
+      "id": "basic-auth",
+      "name": "Basic Authorization Credential",
+      "regex": "(?i)\\bBasic\\s+(?P<secret>[A-Za-z0-9+/]{16,}={0,2})",
+      "severity_base": 60,
+      "keywords": ["basic"],
+      "recommendation": "轮换对应账号凭据，并在运行时安全构造 Authorization 头。"
+    }
+  ]
+}

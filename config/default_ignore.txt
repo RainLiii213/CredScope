@@ -1,0 +1,16 @@
+# 默认忽略目录；每行一个目录名
+.git
+venv
+.venv
+__pycache__
+node_modules
+dist
+build
+.idea
+.vscode
+.pytest_cache
+.mypy_cache
+.ruff_cache
+coverage
+htmlcov
+output

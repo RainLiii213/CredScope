@@ -1,0 +1,111 @@
+{
+  "tool": {
+    "name": "CredScope",
+    "version": "1.0.0"
+  },
+  "target_path": "D:\\大学\\本科课程\\大二上\\python (pre semester)\\project\\credscope\\demo_project",
+  "scanned_at": "2026-09-14T06:15:26.984872+00:00",
+  "summary": {
+    "findings": 4,
+    "severity_counts": {
+      "CRITICAL": 2,
+      "HIGH": 1,
+      "MEDIUM": 1,
+      "LOW": 0
+    }
+  },
+  "stats": {
+    "files_discovered": 4,
+    "files_scanned": 4,
+    "files_skipped": 0,
+    "lines_scanned": 21,
+    "bytes_scanned": 822,
+    "duration_seconds": 0.0045,
+    "skip_reasons": {}
+  },
+  "findings": [
+    {
+      "file_path": "app.py",
+      "line_number": 5,
+      "column": 17,
+      "secret_type": "GitHub Token",
+      "masked_value": "gith*******************************PQ",
+      "risk_score": 100,
+      "severity": "CRITICAL",
+      "detectors": [
+        "context",
+        "entropy",
+        "rule"
+      ],
+      "evidence": [
+        "命中规则 github-token（GitHub Token）",
+        "敏感字段名：github_token",
+        "检测到直接写入源码的字符串",
+        "字符串 Shannon 熵较高（5.10 bits/char）"
+      ],
+      "entropy": 5.101345257520842,
+      "rule_id": "github-token",
+      "recommendation": "立即撤销该 GitHub Token，并通过环境变量或密钥管理服务提供替代凭据。"
+    },
+    {
+      "file_path": "app.py",
+      "line_number": 7,
+      "column": 18,
+      "secret_type": "Generic Secret",
+      "masked_value": "Q7vL**************************Aa",
+      "risk_score": 100,
+      "severity": "CRITICAL",
+      "detectors": [
+        "context",
+        "entropy",
+        "rule"
+      ],
+      "evidence": [
+        "命中规则 generic-secret（Generic Secret）",
+        "敏感字段名：client_secret",
+        "检测到直接写入源码的字符串",
+        "字符串 Shannon 熵较高（5.00 bits/char）"
+      ],
+      "entropy": 5.0,
+      "rule_id": "generic-secret",
+      "recommendation": "轮换该 Secret，并避免在源码或静态配置中硬编码。"
+    },
+    {
+      "file_path": "config/settings.yaml",
+      "line_number": 1,
+      "column": 16,
+      "secret_type": "Database Connection String",
+      "masked_value": "post************************************************************mo",
+      "risk_score": 70,
+      "severity": "HIGH",
+      "detectors": [
+        "rule"
+      ],
+      "evidence": [
+        "命中规则 database-url（Database Connection String）"
+      ],
+      "entropy": null,
+      "rule_id": "database-url",
+      "recommendation": "轮换数据库密码，并使用环境变量拼装连接配置。"
+    },
+    {
+      "file_path": "app.py",
+      "line_number": 6,
+      "column": 13,
+      "secret_type": "Hardcoded Password",
+      "masked_value": "Cou***************68",
+      "risk_score": 45,
+      "severity": "MEDIUM",
+      "detectors": [
+        "context"
+      ],
+      "evidence": [
+        "敏感字段名：password",
+        "检测到直接写入源码的字符串"
+      ],
+      "entropy": null,
+      "rule_id": null,
+      "recommendation": "避免硬编码敏感值；改用环境变量或安全的密钥管理服务。"
+    }
+  ]
+}
