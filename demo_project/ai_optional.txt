@@ -1,0 +1,2 @@
+# 人工构造且不可用；默认仅产生 Entropy 候选，加载 AI Rule Pack 后形成 Finding。
+provider_value = "sk-ant-api03-A1b2C3d4E5f6G7h8J9k0LmNoPqRs"

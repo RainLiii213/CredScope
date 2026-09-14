@@ -15,18 +15,18 @@
   </style>
 </head>
 <body><main>
-  <header><h1>CredScope Security Audit Dashboard</h1><p>目标：D:\大学\本科课程\大二上\python (pre semester)\project\credscope\demo_project</p><p>扫描时间（UTC）：2026-09-14T07:27:45.039165+00:00</p></header>
+  <header><h1>CredScope Security Audit Dashboard</h1><p>目标：D:\大学\本科课程\大二上\python (pre semester)\project\credscope\demo_statistics</p><p>扫描时间（UTC）：2026-09-14T07:27:49.238099+00:00</p></header>
   <section class="summary">
     <div class="metric"><b>4</b><span>Findings</span></div><div class="metric"><b>2</b><span>Critical</span></div>
     <div class="metric"><b>1</b><span>High</span></div><div class="metric"><b>1</b><span>Medium</span></div><div class="metric"><b>0</b><span>Low</span></div>
-    <div class="metric"><b>5</b><span>Files scanned</span></div><div class="metric"><b>23</b><span>Lines scanned</span></div><div class="metric"><b>0.006s</b><span>Duration</span></div><div class="metric"><b>4015 lines/s</b><span>Scan speed</span></div>
+    <div class="metric"><b>3</b><span>Files scanned</span></div><div class="metric"><b>13</b><span>Lines scanned</span></div><div class="metric"><b>0.005s</b><span>Duration</span></div><div class="metric"><b>2573 lines/s</b><span>Scan speed</span></div>
   </section>
   <div class="notice">Risk Score 是基于规则的启发式风险分，不表示凭据为真的统计概率。</div>
   <section class="charts">
     <div class="panel"><h2>Severity Distribution</h2><div class="bar-row"><span class="bar-label">CRITICAL</span><span class="bar-track"><i style="width:100%"></i></span><b>2</b></div><div class="bar-row"><span class="bar-label">HIGH</span><span class="bar-track"><i style="width:50%"></i></span><b>1</b></div><div class="bar-row"><span class="bar-label">MEDIUM</span><span class="bar-track"><i style="width:50%"></i></span><b>1</b></div><div class="bar-row"><span class="bar-label">LOW</span><span class="bar-track"><i style="width:0%"></i></span><b>0</b></div></div>
     <div class="panel"><h2>Credential Type Distribution</h2><div class="bar-row"><span class="bar-label">API Credential</span><span class="bar-track"><i style="width:100%"></i></span><b>1</b></div><div class="bar-row"><span class="bar-label">Database Credential</span><span class="bar-track"><i style="width:100%"></i></span><b>1</b></div><div class="bar-row"><span class="bar-label">Generic Secret</span><span class="bar-track"><i style="width:100%"></i></span><b>1</b></div><div class="bar-row"><span class="bar-label">Password</span><span class="bar-track"><i style="width:100%"></i></span><b>1</b></div></div>
     <div class="panel"><h2>Detector Contribution</h2><div class="bar-row"><span class="bar-label">rule</span><span class="bar-track"><i style="width:100%"></i></span><b>3</b></div><div class="bar-row"><span class="bar-label">context</span><span class="bar-track"><i style="width:100%"></i></span><b>3</b></div><div class="bar-row"><span class="bar-label">entropy</span><span class="bar-track"><i style="width:67%"></i></span><b>2</b></div><p class="foot">一个 Finding 可由多个检测器支持，因此总数可大于 Findings。</p></div>
-    <div class="panel"><h2>Top Risk Files</h2><div class="bar-row"><span class="bar-label">app.py (max 100)</span><span class="bar-track"><i style="width:100%"></i></span><b>3</b></div><div class="bar-row"><span class="bar-label">config/settings.yaml (max 70)</span><span class="bar-track"><i style="width:33%"></i></span><b>1</b></div></div>
+    <div class="panel"><h2>Top Risk Files</h2><div class="bar-row"><span class="bar-label">mixed.py (max 100)</span><span class="bar-track"><i style="width:100%"></i></span><b>3</b></div><div class="bar-row"><span class="bar-label">config/database.yaml (max 70)</span><span class="bar-track"><i style="width:33%"></i></span><b>1</b></div></div>
     <div class="panel"><h2>Risk Score Distribution</h2><div class="bar-row"><span class="bar-label">80-100</span><span class="bar-track"><i style="width:100%"></i></span><b>2</b></div><div class="bar-row"><span class="bar-label">60-79</span><span class="bar-track"><i style="width:50%"></i></span><b>1</b></div><div class="bar-row"><span class="bar-label">40-59</span><span class="bar-track"><i style="width:50%"></i></span><b>1</b></div><div class="bar-row"><span class="bar-label">20-39</span><span class="bar-track"><i style="width:0%"></i></span><b>0</b></div></div>
   </section>
 
@@ -35,10 +35,10 @@
         <div class="finding-head"><span class="badge">CRITICAL</span>
 
           <strong>GitHub Token</strong><span class="score">100/100</span></div>
-        <div class="location">app.py:5</div>
-        <dl><dt>脱敏值</dt><dd><code>gith*******************************PQ</code></dd>
+        <div class="location">mixed.py:3</div>
+        <dl><dt>脱敏值</dt><dd><code>gith********************************BC</code></dd>
           <dt>检测器</dt><dd>context, entropy, rule</dd>
-          <dt>依据</dt><dd><ul><li>命中规则 github-token（GitHub Token）</li><li>敏感字段名：github_token</li><li>检测到直接写入源码的字符串</li><li>字符串 Shannon 熵较高（5.10 bits/char）</li></ul></dd>
+          <dt>依据</dt><dd><ul><li>命中规则 github-token（GitHub Token）</li><li>敏感字段名：github_token</li><li>检测到直接写入源码的字符串</li><li>字符串 Shannon 熵较高（4.73 bits/char）</li></ul></dd>
           <dt>建议</dt><dd>立即撤销该 GitHub Token，并通过环境变量或密钥管理服务提供替代凭据。</dd></dl>
       </article>
 
@@ -46,8 +46,8 @@
         <div class="finding-head"><span class="badge">CRITICAL</span>
 
           <strong>Generic Secret</strong><span class="score">100/100</span></div>
-        <div class="location">app.py:7</div>
-        <dl><dt>脱敏值</dt><dd><code>Q7vL**************************Aa</code></dd>
+        <div class="location">mixed.py:5</div>
+        <dl><dt>脱敏值</dt><dd><code>S7tL**************************Aa</code></dd>
           <dt>检测器</dt><dd>context, entropy, rule</dd>
           <dt>依据</dt><dd><ul><li>命中规则 generic-secret（Generic Secret）</li><li>敏感字段名：client_secret</li><li>检测到直接写入源码的字符串</li><li>字符串 Shannon 熵较高（5.00 bits/char）</li></ul></dd>
           <dt>建议</dt><dd>轮换该 Secret，并避免在源码或静态配置中硬编码。</dd></dl>
@@ -57,8 +57,8 @@
         <div class="finding-head"><span class="badge">HIGH</span>
 
           <strong>Database Connection String</strong><span class="score">70/100</span></div>
-        <div class="location">config/settings.yaml:1</div>
-        <dl><dt>脱敏值</dt><dd><code>post************************************************************mo</code></dd>
+        <div class="location">config/database.yaml:1</div>
+        <dl><dt>脱敏值</dt><dd><code>post*************************************************************mo</code></dd>
           <dt>检测器</dt><dd>rule</dd>
           <dt>依据</dt><dd><ul><li>命中规则 database-url（Database Connection String）</li></ul></dd>
           <dt>建议</dt><dd>轮换数据库密码，并使用环境变量拼装连接配置。</dd></dl>
@@ -68,8 +68,8 @@
         <div class="finding-head"><span class="badge">MEDIUM</span>
 
           <strong>Hardcoded Password</strong><span class="score">45/100</span></div>
-        <div class="location">app.py:6</div>
-        <dl><dt>脱敏值</dt><dd><code>Cou***************68</code></dd>
+        <div class="location">mixed.py:4</div>
+        <dl><dt>脱敏值</dt><dd><code>Stat**********************68</code></dd>
           <dt>检测器</dt><dd>context</dd>
           <dt>依据</dt><dd><ul><li>敏感字段名：password</li><li>检测到直接写入源码的字符串</li></ul></dd>
           <dt>建议</dt><dd>避免硬编码敏感值；改用环境变量或安全的密钥管理服务。</dd></dl>

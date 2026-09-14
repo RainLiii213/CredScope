@@ -1,0 +1,40 @@
+{
+  "tool": {
+    "name": "CredScope",
+    "version": "1.1.0"
+  },
+  "baseline_format": 1,
+  "created_at": "2026-09-14T07:28:28.340215+00:00",
+  "updated_at": "2026-09-14T07:28:29.513305+00:00",
+  "target_path": "D:\\大学\\本科课程\\大二上\\python (pre semester)\\project\\credscope\\demo_baseline\\changed",
+  "findings": [
+    {
+      "fingerprint": "4c73fbb0ea84911908698be0bc0c9df693bd468b0072fa3c4305d68b7971e51f",
+      "file_path": "app.py",
+      "secret_type": "Generic API Key",
+      "severity": "CRITICAL",
+      "risk_score": 100,
+      "detectors": [
+        "context",
+        "entropy",
+        "rule"
+      ],
+      "rule_id": "generic-api-key",
+      "masked_value": "NEWC*******************F6",
+      "last_line_number": 6
+    },
+    {
+      "fingerprint": "fc545a8bc81ff7db71cb6bd296bac8f00c594c91cfc7be64e7ec14c447fcfd1e",
+      "file_path": "app.py",
+      "secret_type": "Hardcoded Password",
+      "severity": "MEDIUM",
+      "risk_score": 45,
+      "detectors": [
+        "context"
+      ],
+      "rule_id": null,
+      "masked_value": "Base********************68",
+      "last_line_number": 5
+    }
+  ]
+}

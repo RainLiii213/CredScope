@@ -1,0 +1,17 @@
+{
+  "pack_name": "My Custom Rules",
+  "version": "1.0",
+  "description": "Safe example of a declarative CredScope rule pack.",
+  "rules": [
+    {
+      "id": "example-service-token",
+      "name": "Example Service Token",
+      "description": "Detect a fictional COURSESRV_ service token.",
+      "pattern": "COURSESRV_[A-Za-z0-9]{20,}",
+      "keywords": ["coursesrv", "token"],
+      "severity_base": 60,
+      "entropy_threshold": 3.5,
+      "recommendation": "Move the credential to an environment variable and rotate it."
+    }
+  ]
+}

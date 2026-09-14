@@ -56,6 +56,8 @@ class Finding:
     entropy: float | None
     rule_id: str | None
     recommendation: str
+    fingerprint: str = ""
+    status: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -71,6 +73,36 @@ class Finding:
             "entropy": self.entropy,
             "rule_id": self.rule_id,
             "recommendation": self.recommendation,
+            "fingerprint": self.fingerprint,
+            "status": self.status,
+        }
+
+
+@dataclass(slots=True)
+class BaselineRecord:
+    """Baseline 中保存的安全 Finding 摘要，不包含源码上下文或原始凭据。"""
+
+    fingerprint: str
+    file_path: str
+    secret_type: str
+    severity: str
+    risk_score: int
+    detectors: list[str]
+    rule_id: str | None
+    masked_value: str
+    last_line_number: int | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "fingerprint": self.fingerprint,
+            "file_path": self.file_path,
+            "secret_type": self.secret_type,
+            "severity": self.severity,
+            "risk_score": self.risk_score,
+            "detectors": self.detectors,
+            "rule_id": self.rule_id,
+            "masked_value": self.masked_value,
+            "last_line_number": self.last_line_number,
         }
 
 
@@ -108,6 +140,8 @@ class ScanResult:
     scanned_at: str = field(
         default_factory=lambda: datetime.now(timezone.utc).isoformat()
     )
+    resolved_findings: list[BaselineRecord] = field(default_factory=list)
+    baseline_path: str | None = None
 
     @property
     def severity_counts(self) -> dict[str, int]:
@@ -117,8 +151,10 @@ class ScanResult:
         return counts
 
     def to_dict(self) -> dict[str, Any]:
-        return {
-            "tool": {"name": "CredScope", "version": "1.0.0"},
+        from audit_statistics import build_statistics
+
+        payload = {
+            "tool": {"name": "CredScope", "version": "1.1.0"},
             "target_path": self.target_path,
             "scanned_at": self.scanned_at,
             "summary": {
@@ -126,5 +162,17 @@ class ScanResult:
                 "severity_counts": self.severity_counts,
             },
             "stats": self.stats.to_dict(),
+            "statistics": build_statistics(self),
             "findings": [finding.to_dict() for finding in self.findings],
         }
+        if self.baseline_path is not None:
+            payload["baseline"] = {
+                "path": self.baseline_path,
+                "new": sum(f.status == "NEW" for f in self.findings),
+                "existing": sum(f.status == "EXISTING" for f in self.findings),
+                "resolved": len(self.resolved_findings),
+            }
+            payload["resolved_findings"] = [
+                finding.to_dict() for finding in self.resolved_findings
+            ]
+        return payload

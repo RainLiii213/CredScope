@@ -1,0 +1,118 @@
+{
+  "tool": {
+    "name": "CredScope",
+    "version": "1.1.0"
+  },
+  "target_path": "D:\\大学\\本科课程\\大二上\\python (pre semester)\\project\\credscope\\demo_baseline\\changed",
+  "scanned_at": "2026-09-14T07:27:47.826625+00:00",
+  "summary": {
+    "findings": 2,
+    "severity_counts": {
+      "CRITICAL": 1,
+      "HIGH": 0,
+      "MEDIUM": 1,
+      "LOW": 0
+    }
+  },
+  "stats": {
+    "files_discovered": 1,
+    "files_scanned": 1,
+    "files_skipped": 0,
+    "lines_scanned": 6,
+    "bytes_scanned": 237,
+    "duration_seconds": 0.0041,
+    "skip_reasons": {}
+  },
+  "statistics": {
+    "scan_speed_lines_per_second": 1450.01,
+    "severity_distribution": {
+      "CRITICAL": 1,
+      "HIGH": 0,
+      "MEDIUM": 1,
+      "LOW": 0
+    },
+    "credential_types": {
+      "API Credential": 1,
+      "Password": 1
+    },
+    "detector_contribution": {
+      "rule": 1,
+      "context": 2,
+      "entropy": 1
+    },
+    "top_risk_files": [
+      {
+        "file_path": "app.py",
+        "finding_count": 2,
+        "max_score": 100,
+        "total_score": 145
+      }
+    ],
+    "risk_score_distribution": {
+      "80-100": 1,
+      "60-79": 0,
+      "40-59": 1,
+      "20-39": 0
+    },
+    "baseline": {
+      "new": 1,
+      "existing": 1,
+      "resolved": 0
+    }
+  },
+  "findings": [
+    {
+      "file_path": "app.py",
+      "line_number": 6,
+      "column": 12,
+      "secret_type": "Generic API Key",
+      "masked_value": "NEWC*******************F6",
+      "risk_score": 100,
+      "severity": "CRITICAL",
+      "detectors": [
+        "context",
+        "entropy",
+        "rule"
+      ],
+      "evidence": [
+        "命中规则 generic-api-key（Generic API Key）",
+        "敏感字段名：api_key",
+        "检测到直接写入源码的字符串",
+        "字符串 Shannon 熵较高（4.24 bits/char）"
+      ],
+      "entropy": 4.243856189774725,
+      "rule_id": "generic-api-key",
+      "recommendation": "轮换 API Key，并改由环境变量或密钥管理服务注入。",
+      "fingerprint": "4c73fbb0ea84911908698be0bc0c9df693bd468b0072fa3c4305d68b7971e51f",
+      "status": "NEW"
+    },
+    {
+      "file_path": "app.py",
+      "line_number": 5,
+      "column": 13,
+      "secret_type": "Hardcoded Password",
+      "masked_value": "Base********************68",
+      "risk_score": 45,
+      "severity": "MEDIUM",
+      "detectors": [
+        "context"
+      ],
+      "evidence": [
+        "敏感字段名：password",
+        "检测到直接写入源码的字符串"
+      ],
+      "entropy": null,
+      "rule_id": null,
+      "recommendation": "避免硬编码敏感值；改用环境变量或安全的密钥管理服务。",
+      "fingerprint": "fc545a8bc81ff7db71cb6bd296bac8f00c594c91cfc7be64e7ec14c447fcfd1e",
+      "status": "EXISTING"
+    }
+  ],
+  "baseline": {
+    "path": "D:\\大学\\本科课程\\大二上\\python (pre semester)\\project\\credscope\\output\\demo-baseline.json",
+    "new": 1,
+    "existing": 1,
+    "resolved": 0
+  },
+  "resolved_findings": []
+}

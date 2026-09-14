@@ -3,24 +3,34 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>CredScope 扫描报告</title>
+  <title>CredScope Security Audit Dashboard</title>
   <style>
     :root{--bg:#f5f7fb;--ink:#172033;--muted:#64748b;--card:#fff;--line:#e2e8f0;--accent:#315efb}
     *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 system-ui,"Microsoft YaHei",sans-serif}
-    main{max-width:1050px;margin:0 auto;padding:42px 22px 70px}header{margin-bottom:24px}h1{margin:0;font-size:32px}header p{color:var(--muted);margin:4px 0;word-break:break-all}
+    main{max-width:1120px;margin:0 auto;padding:42px 22px 70px}header{margin-bottom:24px}h1{margin:0;font-size:32px}h2{font-size:19px;margin:0 0 14px}header p{color:var(--muted);margin:4px 0;word-break:break-all}
     .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin:24px 0}.metric{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px}.metric b{display:block;font-size:25px}.metric span{color:var(--muted)}
     .notice{border-left:4px solid var(--accent);background:#eef3ff;padding:12px 16px;border-radius:6px;margin:22px 0}.finding{background:var(--card);border:1px solid var(--line);border-left:5px solid #94a3b8;border-radius:12px;padding:18px;margin:14px 0}.finding.critical{border-left-color:#991b1b}.finding.high{border-left-color:#dc2626}.finding.medium{border-left-color:#d97706}.finding.low{border-left-color:#2563eb}
-    .finding-head{display:flex;align-items:center;gap:12px}.badge{font-weight:700;font-size:12px;letter-spacing:.04em}.score{margin-left:auto;font-weight:700}.location{color:var(--muted);font-family:ui-monospace,monospace;margin:8px 0;word-break:break-all}dl{display:grid;grid-template-columns:90px 1fr;margin:10px 0 0}dt{color:var(--muted);font-weight:600}dd{margin:0 0 8px}ul{margin:0;padding-left:20px}code{background:#f1f5f9;padding:3px 7px;border-radius:5px}.empty{background:#fff;padding:22px;border-radius:12px}.foot{color:var(--muted);margin-top:28px;font-size:13px}
+    .charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;margin:18px 0}.panel,.resolved{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px}.bar-row{display:grid;grid-template-columns:minmax(105px,1.3fr) 2fr 28px;gap:9px;align-items:center;margin:9px 0}.bar-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#475569}.bar-track{height:9px;background:#e8edf5;border-radius:20px;overflow:hidden}.bar-track i{display:block;height:100%;background:linear-gradient(90deg,#315efb,#7c3aed);border-radius:20px}.empty-chart{color:var(--muted)}.delta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.delta-grid div{text-align:center;background:#f8fafc;border-radius:8px;padding:10px}.delta-grid b{display:block;font-size:24px}.delta-grid span,.severity-label{color:var(--muted)}
+    .finding-head{display:flex;align-items:center;gap:12px}.badge{font-weight:700;font-size:12px;letter-spacing:.04em}.score{margin-left:auto;font-weight:700}.location{color:var(--muted);font-family:ui-monospace,monospace;margin:8px 0;word-break:break-all}dl{display:grid;grid-template-columns:90px 1fr;margin:10px 0 0}dt{color:var(--muted);font-weight:600}dd{margin:0 0 8px}ul{margin:0;padding-left:20px}code{background:#f1f5f9;padding:3px 7px;border-radius:5px}.empty{background:#fff;padding:22px;border-radius:12px}.resolved{margin:18px 0}.foot{color:var(--muted);margin-top:28px;font-size:13px}@media(max-width:600px){.charts{grid-template-columns:1fr}.bar-row{grid-template-columns:100px 1fr 24px}}
   </style>
 </head>
 <body><main>
-  <header><h1>CredScope 扫描报告</h1><p>目标：{{TARGET}}</p><p>扫描时间（UTC）：{{SCANNED_AT}}</p></header>
+  <header><h1>CredScope Security Audit Dashboard</h1><p>目标：{{TARGET}}</p><p>扫描时间（UTC）：{{SCANNED_AT}}</p></header>
   <section class="summary">
     <div class="metric"><b>{{TOTAL}}</b><span>Findings</span></div><div class="metric"><b>{{CRITICAL}}</b><span>Critical</span></div>
     <div class="metric"><b>{{HIGH}}</b><span>High</span></div><div class="metric"><b>{{MEDIUM}}</b><span>Medium</span></div><div class="metric"><b>{{LOW}}</b><span>Low</span></div>
-    <div class="metric"><b>{{FILES_SCANNED}}</b><span>Files scanned</span></div><div class="metric"><b>{{FILES_SKIPPED}}</b><span>Files skipped</span></div><div class="metric"><b>{{LINES_SCANNED}}</b><span>Lines scanned</span></div><div class="metric"><b>{{DURATION}}</b><span>Duration</span></div>
+    <div class="metric"><b>{{FILES_SCANNED}}</b><span>Files scanned</span></div><div class="metric"><b>{{LINES_SCANNED}}</b><span>Lines scanned</span></div><div class="metric"><b>{{DURATION}}</b><span>Duration</span></div><div class="metric"><b>{{SCAN_SPEED}}</b><span>Scan speed</span></div>
   </section>
   <div class="notice">Risk Score 是基于规则的启发式风险分，不表示凭据为真的统计概率。</div>
-  <section>{{FINDINGS}}</section>
+  <section class="charts">
+    <div class="panel"><h2>Severity Distribution</h2>{{SEVERITY_CHART}}</div>
+    <div class="panel"><h2>Credential Type Distribution</h2>{{TYPE_CHART}}</div>
+    <div class="panel"><h2>Detector Contribution</h2>{{DETECTOR_CHART}}<p class="foot">一个 Finding 可由多个检测器支持，因此总数可大于 Findings。</p></div>
+    <div class="panel"><h2>Top Risk Files</h2>{{TOP_FILES_CHART}}</div>
+    <div class="panel"><h2>Risk Score Distribution</h2>{{RISK_CHART}}</div>
+  </section>
+  {{BASELINE_SECTION}}
+  <h2>Finding Details</h2><section>{{FINDINGS}}</section>
+  {{RESOLVED_FINDINGS}}
   <p class="foot">报告仅包含脱敏值。CredScope 用于辅助发现风险，不能保证找出所有敏感凭据。</p>
 </main></body></html>

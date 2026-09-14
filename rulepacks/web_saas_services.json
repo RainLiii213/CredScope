@@ -1,0 +1,27 @@
+{
+  "pack_name": "Web & SaaS Credential Pack",
+  "version": "1.0",
+  "description": "Stable server-side Web and SaaS credential prefixes.",
+  "rules": [
+    {
+      "id": "stripe-secret-key",
+      "name": "Stripe Secret or Restricted Key",
+      "description": "Stripe server-side secret and restricted keys; publishable pk_ keys are excluded.",
+      "pattern": "(?:sk|rk)_(?:live|test)_[A-Za-z0-9]{20,}",
+      "keywords": [],
+      "severity_base": 60,
+      "entropy_threshold": 3.5,
+      "recommendation": "Roll the Stripe key and store the replacement in a server-side secret manager."
+    },
+    {
+      "id": "shopify-access-token",
+      "name": "Shopify Access Token",
+      "description": "Shopify online/offline and delegate access token prefixes.",
+      "pattern": "(?:shpat|shppa)_[A-Za-z0-9]{20,}",
+      "keywords": [],
+      "severity_base": 60,
+      "entropy_threshold": 3.5,
+      "recommendation": "Revoke the Shopify token and keep replacement credentials outside the repository."
+    }
+  ]
+}

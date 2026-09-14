@@ -1,0 +1,37 @@
+{
+  "pack_name": "AI & LLM Service Credential Pack",
+  "version": "1.0",
+  "description": "Stable, publicly documented AI service credential prefixes.",
+  "rules": [
+    {
+      "id": "anthropic-api-key",
+      "name": "Anthropic API Key",
+      "description": "Anthropic API key using the documented sk-ant-api03 prefix.",
+      "pattern": "sk-ant-api03-[A-Za-z0-9_-]{24,}",
+      "keywords": [],
+      "severity_base": 60,
+      "entropy_threshold": 3.5,
+      "recommendation": "Revoke and rotate the Anthropic API key, then load it from a secure environment variable."
+    },
+    {
+      "id": "huggingface-user-token",
+      "name": "Hugging Face User Token",
+      "description": "Hugging Face user access token using the documented hf_ prefix.",
+      "pattern": "hf_[A-Za-z0-9]{20,}",
+      "keywords": [],
+      "severity_base": 60,
+      "entropy_threshold": 3.5,
+      "recommendation": "Revoke and recreate the Hugging Face token with the minimum required role."
+    },
+    {
+      "id": "replicate-api-token",
+      "name": "Replicate API Token",
+      "description": "Replicate tokens are documented as 40 characters beginning with r8_.",
+      "pattern": "r8_[A-Za-z0-9]{37}",
+      "keywords": [],
+      "severity_base": 60,
+      "entropy_threshold": 3.5,
+      "recommendation": "Disable and replace the Replicate token, then store it outside source control."
+    }
+  ]
+}

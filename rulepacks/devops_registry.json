@@ -1,0 +1,37 @@
+{
+  "pack_name": "DevOps & Package Registry Credential Pack",
+  "version": "1.0",
+  "description": "Credentials used by source hosting, package publishing, and infrastructure tooling.",
+  "rules": [
+    {
+      "id": "gitlab-access-token",
+      "name": "GitLab Access Token",
+      "description": "Default GitLab personal, project, and group access token prefix.",
+      "pattern": "glpat-[A-Za-z0-9_-]{20,}",
+      "keywords": [],
+      "severity_base": 60,
+      "entropy_threshold": 3.5,
+      "recommendation": "Revoke and rotate the GitLab token and use a protected CI variable or secret store."
+    },
+    {
+      "id": "pypi-api-token",
+      "name": "PyPI API Token",
+      "description": "PyPI API tokens use the documented pypi- prefix.",
+      "pattern": "pypi-[A-Za-z0-9_-]{30,}",
+      "keywords": [],
+      "severity_base": 60,
+      "entropy_threshold": 3.5,
+      "recommendation": "Revoke the PyPI token and prefer Trusted Publishing or a scoped replacement token."
+    },
+    {
+      "id": "hcp-terraform-token",
+      "name": "HCP Terraform API Token",
+      "description": "HCP Terraform token containing the documented atlasv1 marker.",
+      "pattern": "[A-Za-z0-9]{6,}\\.atlasv1\\.[A-Za-z0-9_-]{20,}",
+      "keywords": [],
+      "severity_base": 60,
+      "entropy_threshold": 3.5,
+      "recommendation": "Revoke the HCP Terraform token and use TF_TOKEN_* environment credentials."
+    }
+  ]
+}

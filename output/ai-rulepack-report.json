@@ -4,11 +4,11 @@
     "version": "1.1.0"
   },
   "target_path": "D:\\大学\\本科课程\\大二上\\python (pre semester)\\project\\credscope\\demo_project",
-  "scanned_at": "2026-09-14T07:27:43.872080+00:00",
+  "scanned_at": "2026-09-14T07:27:45.267197+00:00",
   "summary": {
-    "findings": 4,
+    "findings": 5,
     "severity_counts": {
-      "CRITICAL": 2,
+      "CRITICAL": 3,
       "HIGH": 1,
       "MEDIUM": 1,
       "LOW": 0
@@ -20,27 +20,27 @@
     "files_skipped": 0,
     "lines_scanned": 23,
     "bytes_scanned": 986,
-    "duration_seconds": 0.0068,
+    "duration_seconds": 0.0067,
     "skip_reasons": {}
   },
   "statistics": {
-    "scan_speed_lines_per_second": 3401.66,
+    "scan_speed_lines_per_second": 3409.12,
     "severity_distribution": {
-      "CRITICAL": 2,
+      "CRITICAL": 3,
       "HIGH": 1,
       "MEDIUM": 1,
       "LOW": 0
     },
     "credential_types": {
-      "API Credential": 1,
+      "API Credential": 2,
       "Database Credential": 1,
       "Generic Secret": 1,
       "Password": 1
     },
     "detector_contribution": {
-      "rule": 3,
+      "rule": 4,
       "context": 3,
-      "entropy": 2
+      "entropy": 3
     },
     "top_risk_files": [
       {
@@ -50,6 +50,12 @@
         "total_score": 245
       },
       {
+        "file_path": "ai_optional.txt",
+        "finding_count": 1,
+        "max_score": 80,
+        "total_score": 80
+      },
+      {
         "file_path": "config/settings.yaml",
         "finding_count": 1,
         "max_score": 70,
@@ -57,7 +63,7 @@
       }
     ],
     "risk_score_distribution": {
-      "80-100": 2,
+      "80-100": 3,
       "60-79": 1,
       "40-59": 1,
       "20-39": 0
@@ -113,6 +119,29 @@
       "rule_id": "generic-secret",
       "recommendation": "轮换该 Secret，并避免在源码或静态配置中硬编码。",
       "fingerprint": "f61425aaa858bded74d6258e988c63e941d150b35850a84a5c5e2166bf781823",
+      "status": null
+    },
+    {
+      "file_path": "ai_optional.txt",
+      "line_number": 2,
+      "column": 19,
+      "secret_type": "Anthropic API Key",
+      "masked_value": "sk-a***********************************Rs",
+      "risk_score": 80,
+      "severity": "CRITICAL",
+      "detectors": [
+        "entropy",
+        "rule"
+      ],
+      "evidence": [
+        "命中规则 anthropic-api-key（Anthropic API Key）",
+        "达到规则熵阈值（5.00 ≥ 3.50）",
+        "字符串 Shannon 熵较高（5.00 bits/char）"
+      ],
+      "entropy": 4.9976766996872675,
+      "rule_id": "anthropic-api-key",
+      "recommendation": "Revoke and rotate the Anthropic API key, then load it from a secure environment variable.",
+      "fingerprint": "eb8aae3a8222bb124cbe3e71085b310bdbe096fbb41fab2c8554b37ac242144d",
       "status": null
     },
     {

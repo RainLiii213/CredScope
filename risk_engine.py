@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import hashlib
+import re
 from collections import defaultdict
 
 from filters import CandidateFilter, mask_secret
@@ -10,6 +12,32 @@ from models import CredentialCandidate, Finding
 
 MIN_REPORT_SCORE = 20
 SEVERITY_ORDER = {"LOW": 1, "MEDIUM": 2, "HIGH": 3, "CRITICAL": 4}
+
+
+def normalize_code_context(line_text: str, raw_value: str) -> str:
+    """移除候选值并规范化空白，供安全、抗行号变化的 Fingerprint 使用。"""
+
+    redacted = line_text.replace(raw_value, "<SECRET>")
+    return re.sub(r"\s+", " ", redacted.strip()).casefold()
+
+
+def finding_fingerprint(
+    *,
+    file_path: str,
+    rule_id: str | None,
+    secret_type: str,
+    detectors: set[str],
+    normalized_context: str,
+) -> str:
+    identity = "\x1f".join(
+        (
+            file_path.replace("\\", "/").casefold(),
+            (rule_id or secret_type).casefold(),
+            ",".join(sorted(detectors)),
+            normalized_context,
+        )
+    )
+    return hashlib.sha256(identity.encode("utf-8")).hexdigest()
 
 
 def severity_for_score(score: int) -> str | None:
@@ -101,4 +129,13 @@ class RiskEngine:
             entropy=max(entropy_values) if entropy_values else None,
             rule_id=preferred.rule_id,
             recommendation=preferred.recommendation,
+            fingerprint=finding_fingerprint(
+                file_path=group[0].file_path,
+                rule_id=preferred.rule_id,
+                secret_type=secret_type,
+                detectors=detectors,
+                normalized_context=normalize_code_context(
+                    group[0].line_text, raw_value
+                ),
+            ),
         )

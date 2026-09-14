@@ -1,0 +1,1 @@
+database_url: "postgresql://stats_user:FakeStatsPass2468@localhost:5432/stats_demo"

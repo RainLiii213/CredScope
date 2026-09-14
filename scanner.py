@@ -12,6 +12,7 @@ from entropy_detector import EntropyDetector
 from filters import CandidateFilter
 from models import CredentialCandidate, ScanResult, ScanStats, SourceFile
 from risk_engine import RiskEngine
+from rule_loader import load_combined_rules
 from rule_detector import RuleDetector
 
 
@@ -75,6 +76,9 @@ class FileScanner:
                     continue
                 stats.files_discovered += 1
                 relative = path.relative_to(self.root)
+                if path.name.lower() == ".credscope-baseline.json":
+                    stats.skipped("baseline file")
+                    continue
                 ignored_part = next(
                     (part for part in relative.parts[:-1] if part in self.ignored_names), None
                 )
@@ -135,6 +139,7 @@ def scan_project(
     excludes: set[str] | None = None,
     allowlist: set[str] | None = None,
     config_dir: Path | None = None,
+    custom_rule_paths: list[Path] | None = None,
 ) -> ScanResult:
     """运行完整的本地扫描管线并返回不含原始 Secret 的结果。"""
 
@@ -147,8 +152,20 @@ def scan_project(
         config / "default_ignore.txt",
         excludes=excludes,
     ).collect(stats)
+    rules, validation_reports = load_combined_rules(
+        config / "rules.json", custom_rule_paths
+    )
+    for report in validation_reports:
+        for issue in report.issues:
+            LOGGER.warning(
+                "规则包 %s [%s] %s：%s",
+                report.path,
+                issue.level,
+                issue.rule_id,
+                issue.reason,
+            )
     detectors = (
-        RuleDetector(config / "rules.json"),
+        RuleDetector(rules=rules),
         ContextDetector(config / "keywords.json"),
         EntropyDetector(),
     )
