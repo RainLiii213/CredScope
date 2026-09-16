@@ -1,10 +1,11 @@
 # Official Rule Packs
 
-Rule Pack 是一组声明式 JSON 检测规则。内置规则始终加载，`--rules` 指定的官方包或用户包按顺序追加；重复 ID 会被明确拒绝，绝不静默覆盖。
+Rule Pack 是一组声明式 JSON 检测规则。内置规则始终加载；官方包推荐用 `--rulepack` 简写，用户包用 `--rules` 追加。重复 ID 会被明确拒绝，绝不静默覆盖。
 
 ```powershell
-python main.py scan . --rules rulepacks/ai_llm_services.json
-python main.py scan . --rules rulepacks/ai_llm_services.json --rules rulepacks/devops_registry.json
+python -m src.main scan . --rulepack ai
+python -m src.main scan . --rulepack ai --rulepack devops
+python -m src.main scan . --rulepack all --rules my-company-rules.json
 ```
 
 ## 三个官方包

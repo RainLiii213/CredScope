@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from entropy_detector import calculate_entropy
-from models import CredentialCandidate, SourceFile
-from rule_loader import MAX_MATCH_INPUT, LoadedRule, RuleConfigError, load_builtin_rules
+from .entropy_detector import calculate_entropy
+from .models import CredentialCandidate, SourceFile
+from .rule_loader import MAX_MATCH_INPUT, LoadedRule, RuleConfigError, load_builtin_rules
 
 
 class RuleDetector:

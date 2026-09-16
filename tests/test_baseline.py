@@ -5,14 +5,14 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from baseline import (
+from src.baseline import (
     BaselineError,
     apply_baseline,
     create_baseline_data,
     load_baseline,
     write_baseline,
 )
-from scanner import scan_project
+from src.scanner import scan_project
 
 
 RAW = "CourseBaselinePassword2468"

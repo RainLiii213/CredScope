@@ -8,7 +8,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from models import BaselineRecord, Finding, ScanResult
+from .models import BaselineRecord, Finding, ScanResult
+from .version import PRODUCT_NAME, __version__
 
 
 BASELINE_FORMAT_VERSION = 1
@@ -28,7 +29,7 @@ class BaselineData:
 
     def to_dict(self) -> dict[str, Any]:
         return {
-            "tool": {"name": "CredScope", "version": "1.1.0"},
+            "tool": {"name": PRODUCT_NAME, "version": __version__},
             "baseline_format": self.format_version,
             "created_at": self.created_at,
             "updated_at": self.updated_at,

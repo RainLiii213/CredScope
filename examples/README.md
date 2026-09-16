@@ -15,7 +15,7 @@
 规则包是声明式 JSON，CredScope 不会执行其中的 Python、Shell、JavaScript 或模板代码。先运行：
 
 ```powershell
-python main.py rules validate examples/custom_rules.template.json
+python -m src.main rules validate examples/custom_rules.template.json
 ```
 
 模板中的 `COURSESRV_...` 是虚构且不可用的假格式。

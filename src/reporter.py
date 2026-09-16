@@ -6,9 +6,11 @@ import html
 import json
 from pathlib import Path
 
-from models import Finding, ScanResult
-from risk_engine import SEVERITY_ORDER
-from audit_statistics import build_statistics
+from .audit_statistics import build_statistics
+from .models import Finding, ScanResult
+from .resource_paths import resource_path
+from .risk_engine import SEVERITY_ORDER
+from .version import __version__
 
 
 class ReportWriteError(RuntimeError):
@@ -40,7 +42,7 @@ def render_cli(result: ScanResult) -> str:
     counts = result.severity_counts
     statistics = build_statistics(result)
     lines = [
-        "CredScope v1.1 - Source Code Credential Security Auditor",
+        f"CredScope {__version__} - Source Code Credential Security Auditor",
         f"扫描目标: {result.target_path}",
         "进度: 完成 (100%)",
         (
@@ -182,7 +184,7 @@ def _resolved_html(result: ScanResult) -> str:
 def write_html_report(
     result: ScanResult, output_path: Path, template_path: Path | None = None
 ) -> Path:
-    template = template_path or Path(__file__).resolve().parent / "templates" / "report.html"
+    template = template_path or resource_path("templates", "report.html")
     try:
         source = template.read_text(encoding="utf-8")
         counts = result.severity_counts
@@ -199,6 +201,7 @@ def write_html_report(
                 '</div></section>'
             )
         replacements = {
+            "{{VERSION}}": __version__,
             "{{TARGET}}": html.escape(result.target_path),
             "{{SCANNED_AT}}": html.escape(result.scanned_at),
             "{{FILES_SCANNED}}": str(result.stats.files_scanned),
@@ -227,7 +230,8 @@ def write_html_report(
         for marker, value in replacements.items():
             source = source.replace(marker, value)
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        output_path.write_text(source, encoding="utf-8")
+        normalized = "\n".join(line.rstrip() for line in source.splitlines()) + "\n"
+        output_path.write_text(normalized, encoding="utf-8")
     except (OSError, UnicodeError) as exc:
         raise ReportWriteError(f"HTML 报告写入失败 {output_path}: {exc}") from exc
     return output_path

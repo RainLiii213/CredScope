@@ -6,8 +6,8 @@ import subprocess
 import sys
 from pathlib import Path
 
-from reporter import render_cli, write_html_report, write_json_report
-from scanner import ScanPathError, scan_project
+from src.reporter import render_cli, write_html_report, write_json_report
+from src.scanner import ScanPathError, scan_project
 
 
 ROOT = Path(__file__).resolve().parents[1]

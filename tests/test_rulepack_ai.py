@@ -2,9 +2,9 @@
 
 from pathlib import Path
 
-from models import SourceFile
-from rule_detector import RuleDetector
-from rule_loader import validate_rule_pack
+from src.models import SourceFile
+from src.rule_detector import RuleDetector
+from src.rule_loader import validate_rule_pack
 
 
 PACK = Path(__file__).resolve().parents[1] / "rulepacks" / "ai_llm_services.json"

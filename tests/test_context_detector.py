@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from context_detector import ContextDetector
-from models import SourceFile
+from src.context_detector import ContextDetector
+from src.models import SourceFile
 
 
 ROOT = Path(__file__).resolve().parents[1]

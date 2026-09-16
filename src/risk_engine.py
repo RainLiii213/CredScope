@@ -6,8 +6,8 @@ import hashlib
 import re
 from collections import defaultdict
 
-from filters import CandidateFilter, mask_secret
-from models import CredentialCandidate, Finding
+from .filters import CandidateFilter, mask_secret
+from .models import CredentialCandidate, Finding
 
 
 MIN_REPORT_SCORE = 20

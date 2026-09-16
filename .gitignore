@@ -6,6 +6,10 @@ __pycache__/
 .venv/
 venv/
 .testdeps/
+.uv-cache/
+.release-venv/
+build/
+dist/
 .coverage
 htmlcov/
 .idea/

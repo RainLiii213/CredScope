@@ -6,8 +6,8 @@ import json
 import re
 from pathlib import Path
 
-from filters import is_environment_reference
-from models import CredentialCandidate, SourceFile
+from .filters import is_environment_reference
+from .models import CredentialCandidate, SourceFile
 
 
 class ContextConfigError(RuntimeError):

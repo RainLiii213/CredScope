@@ -5,9 +5,9 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from models import SourceFile
-from rule_detector import RuleDetector
-from rule_loader import (
+from src.models import SourceFile
+from src.rule_detector import RuleDetector
+from src.rule_loader import (
     MAX_KEYWORDS,
     MAX_PATTERN_LENGTH,
     MAX_RULES_PER_PACK,

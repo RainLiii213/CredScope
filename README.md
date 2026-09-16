@@ -1,103 +1,107 @@
-# CredScope v1.1
+# CredScope 1.1.0 Final Release
 
-CredScope（Source Code Credential Security Auditor）是一个完全在本地运行的 Python 命令行工具，用于在代码提交、分享或发布前发现潜在硬编码凭据。v1.1 在保留 v1.0 扫描主链路的基础上增加安全 Baseline、声明式自定义规则、三个官方规则包和增强统计 Dashboard。
+CredScope（Source Code Credential Security Auditor）是一款完全离线的源码凭据审计工具。它会在提交、分享或发布项目之前，找出疑似硬编码的 Token、密码、API Key、私钥头和数据库连接串，并只展示脱敏结果。
 
-> CredScope 是辅助审计工具，不能保证发现所有 Secret。Risk Score 是可解释的启发式风险分，不是“凭据为真”的概率。
+一句话使用：进入要检查的目录后运行 `CredScope.exe scan .`。
 
-## 核心扫描原理
+> CredScope 是辅助审计工具。Risk Score 是可解释的启发式风险分，不是“凭据为真”的概率，也不能保证发现所有 Secret。
 
-主链路保持为：文件发现 → Rule / Context / Entropy → False Positive Filter → Risk Engine → Finding。v1.1 的三个扩展分别接入明确位置：
+## 30 秒快速开始
 
-- Rule Loader / Validator 位于 Rule Detector 之前；内置规则始终生效，自定义包只追加规则。
-- Baseline 位于 Risk Engine 生成 Finding 之后，不改变检测结果。
-- Statistics 仅从 `ScanResult` 和安全的 `Finding` 派生，不接触原始 Secret。
-
-三类 Detector：
-
-1. **Rule Detector**：执行通过 Validator 的格式规则，包括 GitHub Token、JWT、Bearer、私钥头、数据库 URL、AWS/Slack、Basic Auth、通用 API Key/Secret 等。
-2. **Context Detector**：识别 `password = "..."`、`api_key: "..."` 等敏感字段的直接字符串赋值，并排除环境变量引用。
-3. **Entropy Detector**：自行实现 Shannon Entropy，只提供支持证据，绝不单独形成 Finding。
-
-Placeholder、UUID、环境变量引用和 allowlist 由独立 Filter 处理。Risk Engine 合并同一候选的多个检测器结果，生成 0–100 的启发式风险分：CRITICAL 80–100、HIGH 60–79、MEDIUM 40–59、LOW 20–39。
-
-## 安装
-
-推荐 Python 3.11 或更高版本。运行时仅使用标准库；pytest 只用于测试。
+Windows 普通用户无需安装 Python：
 
 ```powershell
-cd "D:\大学\本科课程\大二上\python (pre semester)\project\credscope"
+# 先看完整安全演示；会自动生成 JSON 和 HTML
+.\CredScope.exe demo
+
+# 扫描当前目录
+.\CredScope.exe scan .
+
+# 扫描并生成离线 Dashboard；无需填写输出路径
+.\CredScope.exe scan . --report html
+```
+
+HTML 默认保存为 `output/credscope-report.html`，JSON 默认保存为 `output/credscope-report.json`。
+
+使用源码运行时，统一采用模块入口 `python -m src.main`：
+
+```powershell
 python -m pip install -r requirements.txt
-python -m pytest -q
+python -m src.main demo
+python -m src.main scan . --report html
 ```
 
-## 普通扫描与报告
+推荐 Python 3.11 或更高版本；扫描运行时只依赖标准库。
 
-原 v1.0 命令和参数继续兼容：
+## 常用命令
+
+| 目的 | 命令 |
+| --- | --- |
+| 查看版本 | `CredScope.exe --version` |
+| 运行完整演示 | `CredScope.exe demo` |
+| 扫描当前目录 | `CredScope.exe scan .` |
+| 自动生成 JSON | `CredScope.exe scan . --report json` |
+| 自动生成 HTML | `CredScope.exe scan . --report html` |
+| 只显示中高风险 | `CredScope.exe scan . --min-level medium` |
+| 额外忽略目录 | `CredScope.exe scan . --exclude generated` |
+| 启用 AI 官方包 | `CredScope.exe scan . --rulepack ai` |
+| 启用全部官方包 | `CredScope.exe scan . --rulepack all` |
+| 校验自定义规则 | `CredScope.exe rules validate examples\custom_rules.template.json` |
+| 列出规则 | `CredScope.exe rules list --rules my-rules.json` |
+| 创建 Baseline | `CredScope.exe baseline create .` |
+| 与 Baseline 比较 | `CredScope.exe scan . --baseline .credscope-baseline.json` |
+
+`--rules`、`--rulepack` 和 `--exclude` 都可重复指定。`--rules` 与 `--rulepack` 可以组合，内置规则始终生效。
+
+## 如何看懂结果
+
+扫描主链路是：文件发现 → Rule / Context / Entropy → False Positive Filter → Risk Engine → Finding。
+
+- Rule Detector 匹配明确的凭据结构。
+- Context Detector 识别 `password = "..."`、`api_key: "..."` 等敏感字段直接赋值。
+- Entropy Detector 自行计算 Shannon Entropy，只提供支持证据，绝不单独形成 Finding。
+- Filter 排除 Placeholder、UUID、环境变量引用和显式 allowlist。
+- Risk Engine 合并同一候选的多项证据，避免重复 Finding。
+
+风险等级：CRITICAL 80–100、HIGH 60–79、MEDIUM 40–59、LOW 20–39。CLI、JSON、HTML 与 Baseline 都只包含类似 `gith********PQ` 的脱敏值，不保存完整候选值。
+
+默认扫描 Python、JavaScript、TypeScript、Java、C/C++、JSON、YAML、TOML、INI、`.env`、文本和常见脚本文件；跳过 Git、虚拟环境、缓存、构建产物、`output`、已知二进制文件和超过 2 MiB 的文件。支持 UTF-8、UTF-8-SIG、GB18030、中文路径与带空格路径。
+
+## 官方 Rule Packs
+
+| 简写 | 文件 | 覆盖范围 |
+| --- | --- | --- |
+| `ai` | `rulepacks/ai_llm_services.json` | Anthropic、Hugging Face、Replicate |
+| `devops` | `rulepacks/devops_registry.json` | GitLab、PyPI、HCP Terraform |
+| `web` | `rulepacks/web_saas_services.json` | Stripe 服务端 Key、Shopify Access Token |
+| `all` | 上述全部 | 一次启用三个官方包 |
 
 ```powershell
-python main.py scan demo_project
-python main.py scan demo_project --report json --output output/demo-report-v11.json
-python main.py scan demo_project --report html --output output/security-dashboard.html
-python main.py scan demo_project --min-level medium --exclude generated --verbose
+CredScope.exe scan . --rulepack ai --report html
+CredScope.exe scan . --rulepack ai --rulepack devops
+CredScope.exe scan . --rulepack all --rules my-company-rules.json
 ```
 
-默认扫描常见源码、配置与文本文件，跳过 Git、虚拟环境、构建产物、缓存、IDE、`output`、已知二进制文件和超过 2 MiB 的文件。支持 UTF-8、UTF-8-SIG、GB18030 与 Windows 中文路径。单个文件异常不会中断完整扫描。
-
-## Baseline
-
-Baseline 用于区分历史 Finding，不代表 EXISTING 风险已经安全，也不会自动忽略或修复任何问题。
-
-```powershell
-# 创建；默认输出到扫描目录下 .credscope-baseline.json
-python main.py baseline create demo_baseline/initial --output output/demo-baseline.json
-
-# 比较，输出 NEW / EXISTING / RESOLVED
-python main.py scan demo_baseline/changed --baseline output/demo-baseline.json
-
-# 用户确认后更新
-python main.py baseline update demo_baseline/changed --file output/demo-baseline.json
-```
-
-Fingerprint 使用 SHA-256，输入为：
-
-```text
-规范化相对路径
-+ rule_id（无规则时使用 secret_type）
-+ 排序后的 detector 集合
-+ 将候选原值替换为 <SECRET> 后、折叠空白并 casefold 的单行上下文
-```
-
-行号不参与身份，因此代码插入导致的行号变化仍能识别为 EXISTING。Baseline 只保存 Fingerprint、脱敏值、类型、等级、规则与最后行号等安全摘要；不保存源码上下文、完整 Secret 或可逆数据。若变量名、规则类型、检测器或周围代码发生明显变化，会形成 NEW Finding。
+规则包只覆盖有相对稳定公开结构的凭据；第三方格式可能变化。格式依据和有意未加入的类型见 [rulepacks/README.md](rulepacks/README.md)。
 
 ## 自定义规则
 
-复制 [examples/custom_rules.template.json](examples/custom_rules.template.json)，按 [examples/README.md](examples/README.md) 修改：
+先复制 [examples/custom_rules.template.json](examples/custom_rules.template.json)，再修改规则 ID、正则、分数和建议：
 
 ```powershell
-python main.py rules validate examples/custom_rules.template.json
-python main.py scan demo_custom_rules --rules examples/custom_rules.template.json
-python main.py rules list --rules examples/custom_rules.template.json
+CredScope.exe rules validate examples\custom_rules.template.json
+CredScope.exe scan demo_custom_rules --rules examples\custom_rules.template.json
 ```
 
-可以重复 `--rules` 合并多个规则包：
-
-```powershell
-python main.py scan . `
-  --rules rulepacks/ai_llm_services.json `
-  --rules rulepacks/devops_registry.json
-```
-
-Custom Rule 是声明式 JSON，绝不执行 Python、Shell、JavaScript、模板或任意函数。Schema：
+最小结构：
 
 ```json
 {
   "pack_name": "My Rules",
   "version": "1.0",
-  "description": "Pack description",
   "rules": [{
     "id": "service-token",
     "name": "Service Token",
-    "description": "What it detects",
     "pattern": "SERVICE_[A-Za-z0-9]{20,}",
     "keywords": ["service", "token"],
     "severity_base": 60,
@@ -107,95 +111,123 @@ Custom Rule 是声明式 JSON，绝不执行 Python、Shell、JavaScript、模�
 }
 ```
 
-`pattern` 默认描述 Secret 本身，Loader 自动加入安全捕获组；也兼容带 `(?P<secret>...)` 的高级规则。内置、官方和用户规则统一为同一种运行时数据结构。
+规则包是声明式 JSON，CredScope 不执行其中的 Python、Shell、JavaScript、模板或任意函数。Validator 会检查结构、必填字段、ID 冲突、正则编译、match-all、空字符串匹配、长度、可疑嵌套量词、关键词上限和分数范围；单行正则输入限制为 8192 字符。无效自定义规则被禁用并报告，内置规则仍继续工作。完整字段说明见 [examples/README.md](examples/README.md)。
 
-### Rule Validator 安全检查
+## Baseline
 
-Validator 检查 JSON/根结构、rules 数组、必需字段、ID 语法与重复、跨来源 ID 冲突、名称、Pattern 类型/空值/长度/编译、match-all、空字符串匹配、可疑嵌套无限量词、keywords 类型/数量/长度、severity 范围、entropy_threshold 类型/范围、recommendation 与单包规则总量。单行正则输入最多 8192 字符。
+Baseline 用于把当前风险分成 NEW、EXISTING 和 RESOLVED；EXISTING 不代表安全，也不会被自动忽略或修复。
 
-无效自定义规则只会被禁用并明确报告，不会让普通扫描崩溃；内置规则损坏仍作为配置错误终止。Validator 可以降低配置错误与 ReDoS 风险，但无法数学上证明任意正则表达式绝对安全，因此未知规则仍应人工复核。
+```powershell
+# 默认写到扫描目录下 .credscope-baseline.json
+CredScope.exe baseline create .
 
-## 官方 Rule Packs
+# 比较并生成 Dashboard
+CredScope.exe scan . --baseline .credscope-baseline.json --report html
 
-详见 [rulepacks/README.md](rulepacks/README.md)：
+# 人工确认后更新
+CredScope.exe baseline update . --file .credscope-baseline.json
+```
 
-- **AI & LLM**：Anthropic、Hugging Face、Replicate。
-- **DevOps & Package Registry**：GitLab、PyPI、HCP Terraform。
-- **Web & SaaS**：Stripe 服务端 Secret/Restricted Key、Shopify Access Token。
+Fingerprint 使用 SHA-256，由规范化相对路径、规则或类型、检测器集合和已将原值替换成 `<SECRET>` 的单行上下文组成。行号不参与身份，因此仅移动代码行仍能识别为 EXISTING。Baseline 只保存不可逆指纹、脱敏值、类型、等级、规则和最后行号等安全摘要。
 
-这些规则仅覆盖官方文档公开且相对稳定的前缀或结构。OpenAI 固定 Key 格式、npm Token、Twilio Secret、Discord Bot Token、SendGrid 完整结构等缺少足够稳定或独特的公开依据，本轮主动不加入；公开标识（如 Twilio Account SID、Stripe publishable key）也不作为 Secret。第三方格式未来可能变化，使用者应复核最新服务商文档。
+## Dashboard 与报告
 
-## Security Audit Statistics
+JSON 保留扫描目标、统计、Finding 和可选 Baseline Delta，便于自动化处理。HTML 是不使用 CDN、不发起网络请求的单文件离线 Dashboard，包含：
 
-CLI 显示扫描规模、耗时、Findings、Severity、Top Risk Types、Top Risk Files；启用 Baseline 时增加 Delta。
+- Findings 与四级风险 Summary Cards；
+- Severity、凭据类型、Detector、Top Risk Files、风险分数分布；
+- 扫描文件数、行数、耗时和速度；
+- Finding 的脱敏详情与修复建议；
+- 可选的 NEW / EXISTING / RESOLVED 区域。
 
-JSON 保留 v1.0 的 `tool`、`target_path`、`summary`、`stats`、`findings`，新增 `statistics`：
-
-- scan speed（lines/s）；
-- severity distribution；
-- credential type distribution；
-- detector contribution；
-- top risk files（Finding 数、最高分、总分）；
-- risk score distribution；
-- baseline delta（未启用时为 `null`）。
-
-一个 Finding 可同时由 Rule、Context、Entropy 支持，因此 Detector Contribution 总和可能大于 Finding 数量。
-
-HTML 是无 CDN、无网络请求的离线 Security Audit Dashboard，包含 Summary Cards、五组纯 CSS 分布图、可选 Baseline Delta、Finding 详情和 Resolved 区域。
+最终目录提供三个可直接打开的样例：`output/sample-report.json`、`output/sample-dashboard.html` 和 `output/sample-baseline-dashboard.html`。
 
 ## Demo
 
-- `demo_project`：v1.0 基础场景，并加入仅在 AI Pack 下报告的假 Anthropic 格式。
-- `demo_custom_rules`：用户模板 True Positive 与相似 Negative。
-- `demo_baseline/initial`、`changed`：旧 Finding 行号移动、新 Finding 出现。
-- `demo_statistics`：Dashboard 的多类型、多文件统计。
+```powershell
+CredScope.exe demo
+```
 
-推荐演示：
+该命令自动扫描内置 `demo_project` 并加载 AI Rule Pack，终端展示脱敏 Finding 和 6 项功能检查，同时生成：
+
+- `output/demo-report.json`
+- `output/demo-dashboard.html`
+
+所有 Demo 值都是人工构造且不可用的假数据。其他场景位于 `demo_custom_rules`、`demo_baseline` 和 `demo_statistics`。
+
+## 测试
 
 ```powershell
-python main.py scan demo_project
-python main.py scan demo_project --rules rulepacks/ai_llm_services.json
-python main.py rules validate examples/custom_rules.template.json
-python main.py baseline create demo_baseline/initial --output output/demo-baseline.json
-python main.py scan demo_baseline/changed --baseline output/demo-baseline.json
-python main.py scan demo_statistics --report html --output output/security-dashboard.html
+python -m pytest -q
+```
+
+src 结构重构后的自动化结果：`67 passed`（迁移前为 `65 passed`）。测试覆盖正常、边界、异常、中文和空格路径、报告、脱敏、Baseline、规则安全、官方包、版本、资源定位、正式模块入口和兼容启动器；正式交付还执行全新虚拟环境与独立 EXE 目录验收。
+
+## Windows EXE
+
+正式交付的 `CredScope.exe` 是 PyInstaller one-file 控制台程序，不要求目标电脑安装 Python。配置、HTML 模板、官方规则包、示例和全部 Demo 资源已打入 EXE；运行时资源从 PyInstaller 临时目录只读加载，报告写到 EXE 所在目录的 `output`。
+
+在源码目录重新构建：
+
+```powershell
+python -m pip install -r requirements.txt
+python build_exe.py
+```
+
+构建结果位于 `dist/CredScope.exe`。`build_exe.py` 从唯一版本源生成 Windows 文件元数据，`CredScope.spec` 声明所有随包数据目录。
+
+本次 src 重构后的正式构建为 8,706,693 字节（8.30 MiB），ProductVersion `1.1.0`，SHA-256：
+
+```text
+B48BEDC44C50BAF4781CFA5548DB291E83AB801408E3979CD5BFA8276C588CCD
 ```
 
 ## 项目结构
 
 ```text
 credscope/
-├── main.py
-├── scanner.py
-├── models.py
-├── rule_loader.py
-├── rule_detector.py
-├── context_detector.py
-├── entropy_detector.py
-├── filters.py
-├── risk_engine.py
-├── baseline.py
-├── audit_statistics.py
-├── reporter.py
-├── config/
-├── examples/
-├── rulepacks/
-├── templates/
-├── demo_project/
-├── demo_custom_rules/
-├── demo_baseline/
-├── demo_statistics/
-├── tests/
-├── output/
+├── main.py                   # 仅保留旧命令兼容启动器
+├── src/                      # 全部正式 Python 产品源码
+│   ├── __init__.py
+│   ├── main.py               # CLI、scan、demo、baseline、rules
+│   ├── version.py            # 唯一版本源
+│   ├── resource_paths.py     # 源码/EXE 资源与输出路径
+│   ├── scanner.py
+│   ├── models.py
+│   ├── rule_loader.py
+│   ├── rule_detector.py
+│   ├── context_detector.py
+│   ├── entropy_detector.py
+│   ├── filters.py
+│   ├── risk_engine.py
+│   ├── baseline.py
+│   ├── audit_statistics.py
+│   └── reporter.py
+├── config/                   # 内置规则、关键词和忽略配置
+├── rulepacks/                # 官方规则扩展包
+├── examples/                 # 自定义规则模板
+├── templates/                # 离线 HTML 模板
+├── demo_project/             # 基础一键演示数据
+├── demo_custom_rules/        # 自定义规则演示
+├── demo_baseline/            # Baseline 演示
+├── demo_statistics/          # Dashboard 统计演示
+├── tests/                    # 自动化测试，不属于产品源码
+├── output/                   # 三个正式样例报告
+├── CredScope.spec
+├── build_exe.py
+├── CredScope.exe
 ├── requirements.txt
+├── README_FIRST.md
 └── README.md
 ```
 
-## v1.1 边界与安全声明
+正式源码入口是 `python -m src.main`。根目录 `main.py` 仅调用 `src.main.run()`，用于兼容历史命令 `python main.py ...`，不包含任何业务逻辑。包内模块统一使用相对导入；资源路径统一由 `src/resource_paths.py` 处理：源码模式定位到项目根，Frozen 模式定位到 PyInstaller `_MEIPASS`，可写输出则定位到 EXE 所在目录。
 
-- 核心扫描、规则验证、Baseline 和报告生成全部在本地完成，不上传源码或候选值。
-- CLI、日志、Baseline、JSON、HTML 只输出统一脱敏值。
-- 工具不会修改被扫描项目源码。
-- 本轮不包含 pre-commit/Git Hook/commit blocker，也没有 GUI、LLM 判断、Git 历史/API 扫描、在线 Token 验证、云扫描、Web Server、数据库、机器学习或复杂 AST。
-- 正则与上下文启发式仍可能漏报或误报；跨行拼接、动态生成和未知格式可能无法识别。
-- PyInstaller 打包时只需将 `config/`、`templates/`、`examples/`、`rulepacks/` 作为数据文件包含；运行时没有额外 Python 依赖。
+## 安全声明与限制
+
+- 所有扫描、规则验证、Baseline 和报告生成都在本地完成；程序没有网络请求代码，不上传源码或候选值。
+- CLI、日志、JSON、HTML 和 Baseline 统一使用脱敏值；工具不会修改被扫描项目源码。
+- Demo 和测试只使用不可用的人工假数据；规则加载器只解析 JSON，不执行用户代码。
+- 启发式与正则检测仍可能误报或漏报；跨行拼接、运行时生成、加密或未知格式可能无法识别。
+- Validator 能降低配置错误与部分 ReDoS 风险，但无法数学上证明任意正则绝对安全，未知规则仍需人工复核。
+- 本版本不包含 Git Hook、GUI、LLM 判断、Git 历史/API 扫描、在线 Token 验证、云扫描、Web Server、数据库、机器学习或复杂 AST。

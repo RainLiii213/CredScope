@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>CredScope Security Audit Dashboard</title>
+  <title>CredScope {{VERSION}} Security Audit Dashboard</title>
   <style>
     :root{--bg:#f5f7fb;--ink:#172033;--muted:#64748b;--card:#fff;--line:#e2e8f0;--accent:#315efb}
     *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 system-ui,"Microsoft YaHei",sans-serif}
@@ -15,7 +15,7 @@
   </style>
 </head>
 <body><main>
-  <header><h1>CredScope Security Audit Dashboard</h1><p>目标：{{TARGET}}</p><p>扫描时间（UTC）：{{SCANNED_AT}}</p></header>
+  <header><h1>CredScope {{VERSION}} Security Audit Dashboard</h1><p>目标：{{TARGET}}</p><p>扫描时间（UTC）：{{SCANNED_AT}}</p></header>
   <section class="summary">
     <div class="metric"><b>{{TOTAL}}</b><span>Findings</span></div><div class="metric"><b>{{CRITICAL}}</b><span>Critical</span></div>
     <div class="metric"><b>{{HIGH}}</b><span>High</span></div><div class="metric"><b>{{MEDIUM}}</b><span>Medium</span></div><div class="metric"><b>{{LOW}}</b><span>Low</span></div>
@@ -32,5 +32,5 @@
   {{BASELINE_SECTION}}
   <h2>Finding Details</h2><section>{{FINDINGS}}</section>
   {{RESOLVED_FINDINGS}}
-  <p class="foot">报告仅包含脱敏值。CredScope 用于辅助发现风险，不能保证找出所有敏感凭据。</p>
+  <p class="foot">CredScope {{VERSION}} · 报告仅包含脱敏值。CredScope 用于辅助发现风险，不能保证找出所有敏感凭据。</p>
 </main></body></html>

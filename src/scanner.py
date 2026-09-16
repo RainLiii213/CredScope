@@ -7,13 +7,14 @@ import re
 import time
 from pathlib import Path
 
-from context_detector import ContextDetector
-from entropy_detector import EntropyDetector
-from filters import CandidateFilter
-from models import CredentialCandidate, ScanResult, ScanStats, SourceFile
-from risk_engine import RiskEngine
-from rule_loader import load_combined_rules
-from rule_detector import RuleDetector
+from .context_detector import ContextDetector
+from .entropy_detector import EntropyDetector
+from .filters import CandidateFilter
+from .models import CredentialCandidate, ScanResult, ScanStats, SourceFile
+from .resource_paths import resource_path
+from .risk_engine import RiskEngine
+from .rule_detector import RuleDetector
+from .rule_loader import load_combined_rules
 
 
 LOGGER = logging.getLogger(__name__)
@@ -144,8 +145,7 @@ def scan_project(
     """运行完整的本地扫描管线并返回不含原始 Secret 的结果。"""
 
     started = time.perf_counter()
-    base_dir = Path(__file__).resolve().parent
-    config = config_dir or base_dir / "config"
+    config = config_dir or resource_path("config")
     stats = ScanStats()
     sources = FileScanner(
         target,

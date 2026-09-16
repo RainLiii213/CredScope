@@ -3,9 +3,9 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from models import BaselineRecord, Finding, ScanResult, ScanStats
-from reporter import render_cli, write_html_report, write_json_report
-from audit_statistics import build_statistics
+from src.audit_statistics import build_statistics
+from src.models import BaselineRecord, Finding, ScanResult, ScanStats
+from src.reporter import render_cli, write_html_report, write_json_report
 
 
 RAW = "StatisticsRawSecretMustNeverAppear123"

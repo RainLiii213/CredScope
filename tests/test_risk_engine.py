@@ -1,5 +1,5 @@
-from models import CredentialCandidate
-from risk_engine import RiskEngine, severity_for_score
+from src.models import CredentialCandidate
+from src.risk_engine import RiskEngine, severity_for_score
 
 
 VALUE = "Q7vL2mN9xR4pT8kW3sY6dF1hJ5cB0zAa"

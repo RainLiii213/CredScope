@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from models import SourceFile
-from rule_detector import RuleConfigError, RuleDetector
+from src.models import SourceFile
+from src.rule_detector import RuleConfigError, RuleDetector
 
 
 ROOT = Path(__file__).resolve().parents[1]

@@ -1,11 +1,11 @@
-from filters import (
+from src.filters import (
     CandidateFilter,
     is_environment_reference,
     is_placeholder,
     is_uuid,
     mask_secret,
 )
-from models import CredentialCandidate
+from src.models import CredentialCandidate
 
 
 def candidate(value: str, line: str = "") -> CredentialCandidate:

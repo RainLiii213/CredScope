@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from entropy_detector import EntropyDetector, calculate_entropy
-from models import SourceFile
+from src.entropy_detector import EntropyDetector, calculate_entropy
+from src.models import SourceFile
 
 
 def test_entropy_edge_cases() -> None:

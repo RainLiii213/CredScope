@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from models import Finding, ScanResult, ScanStats
-from reporter import render_cli, write_html_report, write_json_report
+from src.models import Finding, ScanResult, ScanStats
+from src.reporter import render_cli, write_html_report, write_json_report
 
 
 RAW = "NeverWriteThisRawSecret987654321"

@@ -6,7 +6,7 @@ import math
 import re
 from collections import Counter
 
-from models import CredentialCandidate, SourceFile
+from .models import CredentialCandidate, SourceFile
 
 
 ENTROPY_THRESHOLD = 4.0

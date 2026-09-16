@@ -1,3 +1,5 @@
 # CredScope 运行时仅使用 Python 标准库。
 # 自动化测试依赖：
 pytest>=8.0,<10.0
+# Windows 独立可执行文件构建依赖：
+pyinstaller>=6.0,<7.0

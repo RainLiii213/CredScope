@@ -7,6 +7,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from .version import PRODUCT_NAME, __version__
+
 
 @dataclass(slots=True)
 class SourceFile:
@@ -151,10 +153,10 @@ class ScanResult:
         return counts
 
     def to_dict(self) -> dict[str, Any]:
-        from audit_statistics import build_statistics
+        from .audit_statistics import build_statistics
 
         payload = {
-            "tool": {"name": "CredScope", "version": "1.1.0"},
+            "tool": {"name": PRODUCT_NAME, "version": __version__},
             "target_path": self.target_path,
             "scanned_at": self.scanned_at,
             "summary": {

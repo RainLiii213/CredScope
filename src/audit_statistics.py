@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections import Counter, defaultdict
 from typing import Any
 
-from models import Finding, ScanResult
+from .models import Finding, ScanResult
 
 
 def credential_category(finding: Finding) -> str:
